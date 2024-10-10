@@ -1,43 +1,35 @@
-    import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import UserDto from '../../dtos/UserDTO';
 
-    export class UserDTO {
-        id: number;
 
-        constructor(id: number) {
-            this.id = id;
-        }
+const TOKEN_KEY = "secret";
+
+class TokenService {
+    signTokens(_id:string) {
+        const accessToken = jwt.sign(
+            {id:_id},
+            TOKEN_KEY,
+            { expiresIn: "7h" }
+        );
+        const refreshToken = jwt.sign(
+            {id:_id},
+            TOKEN_KEY,
+            { expiresIn: "7d" }
+        );
+        return { accessToken, refreshToken };
     }
 
-    const TOKEN_KEY = "ll";
-
-    class TokenService {
-
-        signTokens(id: number) {
-            const userDTO = new UserDTO(id);
-            const accessToken = jwt.sign(
-                { ...userDTO },
-                TOKEN_KEY,
-                { expiresIn: "7h" }
-            );
-            const refreshToken = jwt.sign(
-                { ...userDTO },
-                TOKEN_KEY,
-                { expiresIn: "7d" }
-            );
-            return { accessToken, refreshToken };
-        }
-
-        decodeAccessToken(accessToken: string) {
-            const decoded = jwt.verify(accessToken, TOKEN_KEY);
-            return decoded;
-        }
-
-        auth(token: string) {
-            return jwt.verify(token, TOKEN_KEY);
-        }
-
-        // refreshToken method would go here
-        // ...
+    decodeAccessToken(accessToken: string) {
+        const decoded = jwt.verify(accessToken, TOKEN_KEY);
+        return decoded;
     }
 
-    export default new TokenService()
+    auth(token: string) {
+        return jwt.verify(token, TOKEN_KEY);
+    }
+
+    // refreshToken method would go here
+    // ...
+}
+
+export default new TokenService()

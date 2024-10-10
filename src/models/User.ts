@@ -52,7 +52,7 @@ const CompanySchema: Schema = new Schema({
 });
 
 const UserSchema: Schema = new Schema({
-  id: { type: Number, unique: true, required: true },
+  id: { type: Number, unique: true, required: false },
   name: { type: String },
   username: { type: String },
   email: { type: String, required: true },
