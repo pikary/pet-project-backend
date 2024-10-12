@@ -9,20 +9,20 @@ const SAULT = 7
 class AuthController {
     async register(req: Request, res: Response, next: NextFunction) {
         try {
-            const { email, firstname, lastname, password, username } = req.body;
+            const { email, firstName, lastName, password } = req.body;
             const user = await User.findOne({ email: email })
+            console.log(user)
             if (user) {
                 return res.json({ msg: 'User already exists' }).status(400)
             }
             const hashedPassword = await bcrypt.hash(password, SAULT)
             const newUser = await User.create({
                 email,
-                name: `${firstname} ${lastname}`,
-                username,
+                name: `${firstName} ${lastName}`,
                 password: hashedPassword,
             });
-            const tokens = tokenService.signTokens(newUser._id as string);
-            return res.status(201).json({ user: newUser, tokens });
+            const tokens = tokenService.signTokens(newUser._id );
+            return res.status(201).json({ data:{user: newUser, tokens} });
         } catch (e) {
             return next(e)
         }
@@ -46,10 +46,10 @@ class AuthController {
             }
 
             // Generate tokens
-            const tokens = tokenService.signTokens(user._id as string);
+            const tokens = tokenService.signTokens(user._id );
 
             // Return the user and tokens
-            return res.status(200).json({ user, tokens });
+            return res.status(200).json({data:{ user, tokens} });
         } catch (e) {
             return next(e);
         }

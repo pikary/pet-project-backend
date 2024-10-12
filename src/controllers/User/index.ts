@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import User from '../../models/User';
+import { log } from 'node:console';
 
 class UserController {
     // Get all users
     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
+            console.log("HELLo")
+
             const users = await User.find();
             res.status(200).json(users);
         } catch (error) {
@@ -14,31 +17,27 @@ class UserController {
 
     // Get a single user by ID
     async getUserById(req: Request, res: Response, next: NextFunction) {
-        try {
-            const user = await User.findById(req.params.id);
-            if (!user) {
-                return res.status(404).json({ msg: 'User not found' });
-            }
-            res.status(200).json(user);
-        } catch (error) {
-            next(error);
-        }
+        
     }
 
-      async getUsers(req: Request, res: Response, next: NextFunction) {
+    async getUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const { mode, value} = req.query;
-            let query = {};
-            if (mode === 'email') {
-                query = { email: new RegExp(value as string, 'i') }; // Case-insensitive search for email
-            } else if (mode === 'username') {
-                query = { username: new RegExp(value as string, 'i') }; // Case-insensitive search for username
+
+            const name  = req.query.name;
+            if (!name) {
+                return res.status(400).json({ msg: 'Error: Name parameter is required.' });
             }
 
-            const users = await User.find(query)
+            const query = {
+                name: {
+                    $regex: new RegExp(name as string, 'i'), // Case-insensitive search
+                }
+            };
+
+            const users = await User.find(query);
 
             res.status(200).json({
-                users,
+                data: users,
             });
         } catch (error) {
             next(error);
@@ -46,15 +45,7 @@ class UserController {
     }
     // Update a user
     async updateUser(req: Request, res: Response, next: NextFunction) {
-        try {
-            const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-            if (!updatedUser) {
-                return res.status(404).json({ msg: 'User not found' });
-            }
-            res.status(200).json(updatedUser);
-        } catch (error) {
-            next(error);
-        }
+      
     }
 
 }

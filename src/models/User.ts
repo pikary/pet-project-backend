@@ -20,7 +20,7 @@ interface Company {
 }
 
 export interface IUser extends Document {
-  id: number;
+  _id: mongoose.Types.ObjectId;  // Add the _id field
   name: string;
   username: string;
   email: string;
@@ -52,9 +52,9 @@ const CompanySchema: Schema = new Schema({
 });
 
 const UserSchema: Schema = new Schema({
-  id: { type: Number, unique: true, required: false },
+
   name: { type: String },
-  username: { type: String },
+  username: { type: String,required:false  },
   email: { type: String, required: true },
   address: { type: AddressSchema },
   phone: { type: String },

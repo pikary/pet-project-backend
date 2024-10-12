@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken';
 import UserDto from '../../dtos/UserDTO';
+import mongoose from 'mongoose';
 
 
 const TOKEN_KEY = "secret";
 
 class TokenService {
-    signTokens(_id:string) {
+    signTokens(_id:mongoose.Types.ObjectId) {
         const accessToken = jwt.sign(
             {id:_id},
             TOKEN_KEY,
